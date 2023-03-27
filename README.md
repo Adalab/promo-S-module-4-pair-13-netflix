@@ -7,8 +7,8 @@ Por favor marca a continuación los ejercicios que hayáis terminado:
 **4.1 MYSQL I:**
 
 - [x] 1.  Crea la base de datos.
-- [ ] 2.  Inserta valores a la bases de datos.
-- [ ] 3.  Crea un repositorio en Github.
+- [x] 2.  Inserta valores a la bases de datos.
+- [x] 3.  Crea un repositorio en Github.
 
 **4.2 MYSQL II:**
 
