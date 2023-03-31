@@ -33,7 +33,7 @@ Por favor marca a continuación los ejercicios que hayáis terminado:
 
 **4.5 Express JS I:**
 
-- [ ] 1. Pide todas las películas
+- [x] 1. Pide todas las películas
 
 **4.6 Express JS II:**
 
