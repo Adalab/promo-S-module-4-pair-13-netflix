@@ -44,8 +44,9 @@ mysql
   });
 
 // 4. Crea un endpoint para escuchar las peticiones que acabas de programar en el front
-server.get("/movies", (req, res) => {
-  console.log("Pidiendo a la base de datos información de los empleados.");
+server.get("/movies/:genre", (req, res) => {
+  console.log(req, 'req');
+  const genreFilterParam = req.params.genre;
   connection
     .query("SELECT * FROM movies")
     .then(([results, fields]) => {
