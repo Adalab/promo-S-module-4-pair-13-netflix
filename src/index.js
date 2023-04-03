@@ -44,11 +44,12 @@ mysql
   });
 
 // 4. Crea un endpoint para escuchar las peticiones que acabas de programar en el front
-server.get("/movies/:genre", (req, res) => {
-  console.log(req, 'req');
-  const genreFilterParam = req.params.genre;
+server.get("/movies", (req, res) => {
+  const genreFilterParam = req.query.genre ? req.query.genre : "%";
+  const sortFilterParam = req.query.sort ? req.query.sort : "asc";
+
   connection
-    .query("SELECT * FROM movies")
+    .query(`SELECT * FROM movies WHERE gender LIKE ? ORDER BY title ${sortFilterParam}`, [genreFilterParam])
     .then(([results, fields]) => {
       //Con la query, nos ha guardado la tabla de los resultados (el listado) en results
       console.log("Información recuperada:");
@@ -63,4 +64,33 @@ server.get("/movies/:genre", (req, res) => {
     .catch((err) => {
       throw err;
     });
+});
+
+
+server.post("/login", (req, res) => {
+
+  const emailLogin = req.body.email;
+  let passwordLogin = req.body.password;
+  let textPasswordLogin = passwordLogin.toString();
+  const emailDataBase = 'SELECT email FROM users';
+  const passwordDataBase = 'SELECT password FROM users';
+
+  if(emailLogin.includes(emailDataBase) || textPasswordLogin.includes(passwordDataBase)) {
+    connection
+      .query(`SELECT * FROM users WHERE email= ? AND password= ?`, [emailLogin, passwordLogin])
+      res.json({
+        success: true,
+        userId: "id_de_la_usuaria_encontrada"
+      });
+  } else {
+    res.json({
+      success: false,
+      errorMessage: "Usuaria/o no encontrada/o"
+    });
+
+  }
+  connection.catch((err) => {
+    throw err;
+  });
+      
 });
