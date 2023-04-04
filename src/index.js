@@ -16,6 +16,9 @@ server.listen(serverPort, () => {
   console.log(`Server listening at http://localhost:${serverPort}`);
 });
 
+// const de la ruta del servidor estátic
+const path = require("path");
+
 // 3. Conexión:
 let connection; // Aquí almacenaremos la conexión a la base de datos
 
@@ -49,7 +52,10 @@ server.get("/movies", (req, res) => {
   const sortFilterParam = req.query.sort ? req.query.sort : "asc";
 
   connection
-    .query(`SELECT * FROM movies WHERE gender LIKE ? ORDER BY title ${sortFilterParam}`, [genreFilterParam])
+    .query(
+      `SELECT * FROM movies WHERE gender LIKE ? ORDER BY title ${sortFilterParam}`,
+      [genreFilterParam]
+    )
     .then(([results, fields]) => {
       //Con la query, nos ha guardado la tabla de los resultados (el listado) en results
       console.log("Información recuperada:");
@@ -66,31 +72,35 @@ server.get("/movies", (req, res) => {
     });
 });
 
-
 server.post("/login", (req, res) => {
-
   const emailLogin = req.body.email;
   let passwordLogin = req.body.password;
-  let textPasswordLogin = passwordLogin.toString();
-  const emailDataBase = 'SELECT email FROM users';
-  const passwordDataBase = 'SELECT password FROM users';
-
-  if(emailLogin.includes(emailDataBase) || textPasswordLogin.includes(passwordDataBase)) {
-    connection
-      .query(`SELECT * FROM users WHERE email= ? AND password= ?`, [emailLogin, passwordLogin])
-      res.json({
-        success: true,
-        userId: "id_de_la_usuaria_encontrada"
-      });
-  } else {
-    res.json({
-      success: false,
-      errorMessage: "Usuaria/o no encontrada/o"
+  console.log([emailLogin, passwordLogin]);
+  connection
+    .query(
+      // Usamos el idUser (col) = id usuaria que tiene ese mail and password. Es la respuesta para el Fetch.
+      `SELECT idUser FROM users WHERE email = ? AND password = ?`,
+      [emailLogin, passwordLogin]
+    )
+    .then(([results]) => {
+      console.log(results);
+      if (results.length === 1) {
+        res.json({
+          success: true,
+          userId: results[0].idUser,
+        });
+      } else {
+        res.json({
+          success: false,
+          errorMessage: "Usuaria/o no encontrada/o",
+        });
+      }
+    })
+    .catch((err) => {
+      throw err;
     });
-
-  }
-  connection.catch((err) => {
-    throw err;
-  });
-      
 });
+
+// Configurate express static:
+const staticServerPath = "./src/public-react";
+server.use(express.static(staticServerPath));
