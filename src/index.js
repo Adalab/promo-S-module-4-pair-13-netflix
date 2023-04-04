@@ -101,6 +101,31 @@ server.post("/login", (req, res) => {
     });
 });
 
+// Configurar motor de plantillas (primero instalamos npm i ejs), después lo siguiente:
+server.set("view engine", "ejs");
+
+// En ejs siempre usamos RENDER:
+server.get("/movie/:movieId", (req, res) => {
+  console.log(req.params);
+  const idUrl = req.params.movieId;
+  connection
+    .query("SELECT idMovies, title, gender FROM movies WHERE idMovies = ? ", [
+      idUrl,
+    ])
+    .then(([results]) => {
+      const foundMovies = results[0];
+      console.log(foundMovies);
+      res.render("movie", foundMovies);
+    });
+});
+
 // Configurate express static:
 const staticServerPath = "./src/public-react";
 server.use(express.static(staticServerPath));
+
+const staticServerPathImage = "./src/public-movies-images";
+server.use(express.static(staticServerPathImage));
+
+server.use(express.static(__dirname + "/public"));
+
+// https://stackoverflow.com/questions/24582338/how-can-i-include-css-files-using-node-express-and-ejs
