@@ -109,7 +109,7 @@ server.get("/movie/:movieId", (req, res) => {
   console.log(req.params);
   const idUrl = req.params.movieId;
   connection
-    .query("SELECT idMovies, title, gender FROM movies WHERE idMovies = ? ", [
+    .query("SELECT idMovie, title, gender FROM movies WHERE idMovie = ? ", [
       idUrl,
     ])
     .then(([results]) => {
@@ -126,6 +126,4 @@ server.use(express.static(staticServerPath));
 const staticServerPathImage = "./src/public-movies-images";
 server.use(express.static(staticServerPathImage));
 
-server.use(express.static(__dirname + "/public"));
-
-// https://stackoverflow.com/questions/24582338/how-can-i-include-css-files-using-node-express-and-ejs
+server.use(express.static("./public"));
