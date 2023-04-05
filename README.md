@@ -52,12 +52,12 @@ Por favor marca a continuación los ejercicios que hayáis terminado:
   - [x] 2. Obtener la película
   - [x] 3. Renderiza una página cualquiera
   - [x] 4. Renderiza la película
-  - [ ] 5. Añade estilos
+  - [x] 5. Añade estilos
 
 **4.8 Mongo I:**
 
-- [ ] 1. Configura MongoDB Atlas
-- [ ] 2. Crea la bases de datos Netflix
+- [x] 1. Configura MongoDB Atlas
+- [x] 2. Crea la bases de datos Netflix
 
 **4.9 Mongo II:**
 
