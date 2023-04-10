@@ -8,13 +8,22 @@ const mysql = require("mysql2/promise");
 // create and config server
 const server = express();
 server.use(cors());
-server.use(express.json());
+server.use(express.json({ limit: "25mb" }));
 
 // init express aplication
 const serverPort = 4000;
 server.listen(serverPort, () => {
   console.log(`Server listening at http://localhost:${serverPort}`);
 });
+
+// Import dbConnect from mongoDB
+const dbConnect = require("../config/connection");
+dbConnect();
+
+// Import model Actor, Movie and User
+const Actor = require("../models/actors");
+const Movie = require("../models/movies");
+const User = require("../models/users");
 
 // const de la ruta del servidor estátic
 const path = require("path");
@@ -117,6 +126,17 @@ server.get("/movie/:movieId", (req, res) => {
       console.log(foundMovies);
       res.render("movie", foundMovies);
     });
+});
+
+// Endpoint to render allMovies from MongoDB
+// then because -> Model.find() no longer accepts a callback (old version)
+server.get("/movies_all_mongo", (req, res) => {
+  Movie.find({}).then((docs) => {
+    res.json({
+      success: true,
+      movies: docs,
+    });
+  });
 });
 
 // Configurate express static:
