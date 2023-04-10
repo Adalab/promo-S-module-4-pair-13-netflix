@@ -55,31 +55,31 @@ mysql
     console.error("Error de configuración: " + err.stack);
   });
 
-// 4. Crea un endpoint para escuchar las peticiones que acabas de programar en el front
-server.get("/movies", (req, res) => {
-  const genreFilterParam = req.query.genre ? req.query.genre : "%";
-  const sortFilterParam = req.query.sort ? req.query.sort : "asc";
+// 4. Crea un endpoint para escuchar las peticiones que acabas de programar en el front (mysql)
+// server.get("/movies", (req, res) => {
+//   const genreFilterParam = req.query.genre ? req.query.genre : "%";
+//   const sortFilterParam = req.query.sort ? req.query.sort : "asc";
 
-  connection
-    .query(
-      `SELECT * FROM movies WHERE gender LIKE ? ORDER BY title ${sortFilterParam}`,
-      [genreFilterParam]
-    )
-    .then(([results, fields]) => {
-      //Con la query, nos ha guardado la tabla de los resultados (el listado) en results
-      console.log("Información recuperada:");
-      results.forEach((result) => {
-        console.log(result);
-      });
-      res.json({
-        success: true,
-        movies: results,
-      });
-    })
-    .catch((err) => {
-      throw err;
-    });
-});
+//   connection
+//     .query(
+//       `SELECT * FROM movies WHERE gender LIKE ? ORDER BY title ${sortFilterParam}`,
+//       [genreFilterParam]
+//     )
+//     .then(([results, fields]) => {
+//       //Con la query, nos ha guardado la tabla de los resultados (el listado) en results
+//       console.log("Información recuperada:");
+//       results.forEach((result) => {
+//         console.log(result);
+//       });
+//       res.json({
+//         success: true,
+//         movies: results,
+//       });
+//     })
+//     .catch((err) => {
+//       throw err;
+//     });
+// });
 
 server.post("/login", (req, res) => {
   const emailLogin = req.body.email;
@@ -130,13 +130,29 @@ server.get("/movie/:movieId", (req, res) => {
 
 // Endpoint to render allMovies from MongoDB
 // then because -> Model.find() no longer accepts a callback (old version)
+// +1 ascending and -1 descending
 server.get("/movies_all_mongo", (req, res) => {
-  Movie.find({}).then((docs) => {
-    res.json({
-      success: true,
-      movies: docs,
+  const genreFilterParam = req.query.genre;
+  if (genreFilterParam === "") {
+    const query = Movie.find({ gender: { $eq: genreFilterParam } }).then(
+      (docs) => {
+        console.log("primer if", docs);
+        res.json({
+          success: true,
+          movies: docs,
+        });
+      }
+    );
+  } else {
+    const query = Movie.find({}).then((docs) => {
+      console.log("género", genreFilterParam);
+      console.log(docs);
+      res.json({
+        success: true,
+        movies: docs,
+      });
     });
-  });
+  }
 });
 
 // Configurate express static:
