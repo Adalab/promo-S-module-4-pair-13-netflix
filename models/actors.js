@@ -1,5 +1,8 @@
+// 15. Create folder "models" and each file for each collection
+
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+
 const actorsSchema = new Schema(
   {
     name: String,

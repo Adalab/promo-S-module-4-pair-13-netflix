@@ -1,3 +1,6 @@
+// 12. Create database on mongoDB
+// 13. Create the folder "config" and the file connection.js to connect the server with the database
+
 const mongoose = require("mongoose");
 
 const dbConnect = () => {

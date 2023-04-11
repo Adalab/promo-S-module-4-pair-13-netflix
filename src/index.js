@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
-/* 1. Instalamos -> npm i mysql2 
-   2. Importamos mySql2 + abajo realizamos la conexión (3)
+/* 1. Install mysql2 -> npm i mysql2 
+   2. Import mySql2 + connection (3)
 */
 const mysql = require("mysql2/promise");
 
@@ -16,7 +16,7 @@ server.listen(serverPort, () => {
   console.log(`Server listening at http://localhost:${serverPort}`);
 });
 
-// Import dbConnect from mongoDB
+// 14. Import dbConnect from mongoDB
 const dbConnect = require("../config/connection");
 dbConnect();
 
@@ -29,12 +29,12 @@ const Favorite = require("../models/favorites");
 // const de la ruta del servidor estátic
 const path = require("path");
 
-// 3. Conexión:
-let connection; // Aquí almacenaremos la conexión a la base de datos
+// 3. Connection:
+let connection; // Store the connection to database
 
 mysql
   .createConnection({
-    host: "127.0.0.1", // = Netflix = nuestra BD
+    host: "127.0.0.1", // = Netflix = our database
     database: "Netflix",
     user: "root",
     password: "",
@@ -56,45 +56,47 @@ mysql
     console.error("Error de configuración: " + err.stack);
   });
 
-// 4. Crea un endpoint para escuchar las peticiones que acabas de programar en el front (mysql)
-// server.get("/movies", (req, res) => {
-//   const genreFilterParam = req.query.genre ? req.query.genre : "%";
-//   const sortFilterParam = req.query.sort ? req.query.sort : "asc";
+// 4. Create an endpoint to get the request received from the Front (mysql)
+server.get("/movies", (req, res) => {
+  const genreFilterParam = req.query.genre ? req.query.genre : "%";
+  const sortFilterParam = req.query.sort ? req.query.sort : "asc";
 
-//   connection
-//     .query(
-//       `SELECT * FROM movies WHERE gender LIKE ? ORDER BY title ${sortFilterParam}`,
-//       [genreFilterParam]
-//     )
-//     .then(([results, fields]) => {
-//       //Con la query, nos ha guardado la tabla de los resultados (el listado) en results
-//       console.log("Información recuperada:");
-//       results.forEach((result) => {
-//         console.log(result);
-//       });
-//       res.json({
-//         success: true,
-//         movies: results,
-//       });
-//     })
-//     .catch((err) => {
-//       throw err;
-//     });
-// });
+  connection
+    .query(
+      `SELECT * FROM movies WHERE gender LIKE ? ORDER BY title ${sortFilterParam}`,
+      [genreFilterParam]
+    )
+    .then(([results, fields]) => {
+      // results is the result of the query's list
+      console.log("Información recuperada:");
+      results.forEach((result) => {
+        console.log(result);
+      });
+      res.json({
+        success: true,
+        movies: results,
+      });
+    })
+    .catch((err) => {
+      throw err;
+    });
+});
 
+// 6. Add login endpoint
 server.post("/login", (req, res) => {
   const emailLogin = req.body.email;
   let passwordLogin = req.body.password;
   console.log([emailLogin, passwordLogin]);
   connection
     .query(
-      // Usamos el idUser (col) = id usuaria que tiene ese mail and password. Es la respuesta para el Fetch.
-      `SELECT idUser FROM users WHERE email = ? AND password = ?`,
+      // We use the column idUser which is the user id which contains email and password. It's the response for the fetch.
+      "SELECT idUser FROM users WHERE email = ? AND password = ?",
       [emailLogin, passwordLogin]
     )
     .then(([results]) => {
       console.log(results);
       if (results.length === 1) {
+        // results is an array of objects
         res.json({
           success: true,
           userId: results[0].idUser,
@@ -111,26 +113,26 @@ server.post("/login", (req, res) => {
     });
 });
 
-// Configurar motor de plantillas (primero instalamos npm i ejs), después lo siguiente:
+// 8. Configure template engines (first npm i ejs), and then:
 server.set("view engine", "ejs");
 
-// En ejs siempre usamos RENDER:
+// 9. Set dynamic endpoint movieId to render movie
 server.get("/movie/:movieId", (req, res) => {
   console.log(req.params);
   const idUrl = req.params.movieId;
   connection
-    .query("SELECT idMovie, title, gender FROM movies WHERE idMovie = ? ", [
-      idUrl,
-    ])
+    .query("SELECT idMovie, title, gender FROM movies WHERE idMovie = ? ", [idUrl])
     .then(([results]) => {
+      // results is an array of objects
       const foundMovies = results[0];
+      // "movie" = movie.ejs
       res.render("movie", foundMovies);
     });
 });
 
-// Endpoint to render allMovies from MongoDB
+// 17. Endpoint to render allMovies from MongoDB
 // then because -> Model.find() no longer accepts a callback (old version)
-// +1 ascending and -1 descending
+// 1 ascending and -1 descending
 server.get("/movies_all_mongo", (req, res) => {
   const genreFilterParam = req.query.genre;
   const sortFilterParam = req.query.sort;
@@ -142,7 +144,7 @@ server.get("/movies_all_mongo", (req, res) => {
     numberSort = -1;
   }
 
-    if (genreFilterParam !== "") {
+  if (genreFilterParam !== "") {
     const query = Movie.find({ genre: { $eq: genreFilterParam } })
     .sort({ title: numberSort})
     .then(
@@ -153,19 +155,19 @@ server.get("/movies_all_mongo", (req, res) => {
         });
       }
     );
-    } else {
-     const query = Movie.find({})
-     .sort({ title: numberSort})
-     .then((docs) => {
-      res.json({
-        success: true,
-        movies: docs,
-      });
-      });
+  } else {
+    const query = Movie.find({})
+    .sort({ title: numberSort})
+    .then((docs) => {
+    res.json({
+      success: true,
+      movies: docs,
+    });
+  });
   }
 });
 
-// Endpoint to insert favorite movies to MongoDB
+// 18. Endpoint to insert favorite movies to MongoDB
 server.post('/favorites-add', (req, res) => {
   const query = Movie.find({ _id: "642d36b21ec0a077732ae1f2" })
   .then((err, docs) => {
@@ -176,26 +178,38 @@ server.post('/favorites-add', (req, res) => {
     }
   });
 
-let idMovie = ObjectId("642d36b21ec0a077732ae1f2")
-let idUser = ObjectId("642d3d411ec0a077732ae1f6")
-const favorite = new Favorite(
-   {
-   idUser: idMovie,
-   idMovie: idUser,
-   score: req.body.score
-   }
-);
-  favorite.create(function (err, doc) {
+  let idMovie = "642d36b21ec0a077732ae1f2";
+  let idUser = "642d3d411ec0a077732ae1f6";
+  const favorite = new Favorite(
+    {
+    idUser: idMovie,
+    idMovie: idUser,
+    score: req.body.score
+    }
+  );
+  favorite.save()
+    .then((err, doc) => {
     res.json(doc);
   });
 });
 
+// 19. Endpoint to obtain favorite movies from MongoDB
+server.get('/favorites-list', (req, res) => {
+  Favorite.find()
+    .exec({path: "users", select: "name"})
+    .then((response) => res.json(response))
+    .catch((error) => {
+      console.log(error)
+    })
+});
 
-// Configurate express static:
+
+// 7. Configure express static:
 const staticServerPath = "./src/public-react";
 server.use(express.static(staticServerPath));
 
 const staticServerPathImage = "./src/public-movies-images";
 server.use(express.static(staticServerPathImage));
 
+// 11. Static server for style for dynamic movie.ejs
 server.use(express.static("./public"));
