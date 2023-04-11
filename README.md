@@ -64,7 +64,7 @@ Por favor marca a continuación los ejercicios que hayáis terminado:
 - [x] 1. Conexión con la bases de datos de MongoDB
 - [x] 2. Modelos para las colecciones
 - [x] 3. Listado de películas
-- [ ] 4. Ordena por nombre
+- [x] 4. Ordena por nombre
 
 **4.10 Mongo III:**
 

@@ -24,6 +24,7 @@ dbConnect();
 const Actor = require("../models/actors");
 const Movie = require("../models/movies");
 const User = require("../models/users");
+const Favorite = require("../models/favorites");
 
 // const de la ruta del servidor estátic
 const path = require("path");
@@ -123,7 +124,6 @@ server.get("/movie/:movieId", (req, res) => {
     ])
     .then(([results]) => {
       const foundMovies = results[0];
-      console.log(foundMovies);
       res.render("movie", foundMovies);
     });
 });
@@ -133,27 +133,63 @@ server.get("/movie/:movieId", (req, res) => {
 // +1 ascending and -1 descending
 server.get("/movies_all_mongo", (req, res) => {
   const genreFilterParam = req.query.genre;
-  if (genreFilterParam === "") {
-    const query = Movie.find({ gender: { $eq: genreFilterParam } }).then(
+  const sortFilterParam = req.query.sort;
+  let numberSort;
+
+  if (sortFilterParam === "asc") {
+    numberSort = 1;
+  } else {
+    numberSort = -1;
+  }
+
+    if (genreFilterParam !== "") {
+    const query = Movie.find({ genre: { $eq: genreFilterParam } })
+    .sort({ title: numberSort})
+    .then(
       (docs) => {
-        console.log("primer if", docs);
         res.json({
           success: true,
           movies: docs,
         });
       }
     );
-  } else {
-    const query = Movie.find({}).then((docs) => {
-      console.log("género", genreFilterParam);
-      console.log(docs);
+    } else {
+     const query = Movie.find({})
+     .sort({ title: numberSort})
+     .then((docs) => {
       res.json({
         success: true,
         movies: docs,
       });
-    });
+      });
   }
 });
+
+// Endpoint to insert favorite movies to MongoDB
+server.post('/favorites-add', (req, res) => {
+  const query = Movie.find({ _id: "642d36b21ec0a077732ae1f2" })
+  .then((err, docs) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(docs);
+    }
+  });
+
+let idMovie = ObjectId("642d36b21ec0a077732ae1f2")
+let idUser = ObjectId("642d3d411ec0a077732ae1f6")
+const favorite = new Favorite(
+   {
+   idUser: idMovie,
+   idMovie: idUser,
+   score: req.body.score
+   }
+);
+  favorite.create(function (err, doc) {
+    res.json(doc);
+  });
+});
+
 
 // Configurate express static:
 const staticServerPath = "./src/public-react";

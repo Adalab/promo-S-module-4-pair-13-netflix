@@ -16,7 +16,7 @@
 // Get all movies from mongoDB (we comment the other Fetch -> above)
 const getMoviesFromApi = (params) => {
   console.log("Se están pidiendo las películas de la app desde mongo");
-  return fetch("//localhost:4000/movies_all_mongo")
+  return fetch(`//localhost:4000/movies_all_mongo?genre=${params.genre}&sort=${params.sort}`)
     .then((response) => response.json())
     .then((data) => {
       return data;
