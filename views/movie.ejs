@@ -6,13 +6,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" type="text/css" href="/public-movie-style/movieStyle.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/movieStyle.css">
 </head>
 <body>
-    <main>
-       <h1><%= title %></h1>
-       <!-- interpolate: -->
-       <p class="gender">gender: <%= gender %></p> 
+    <main class="main">
+       <h1 class="title"><%= title %></h1>
+       <img class="image" src="<%= image %>" alt="Movie image" />
+       <p class="gender">Gender: <%= gender %></p> 
     </main>
 </body>
 </html>

@@ -121,9 +121,10 @@ server.get("/movie/:movieId", (req, res) => {
   console.log(req.params);
   const idUrl = req.params.movieId;
   connection
-    .query("SELECT idMovie, title, gender FROM movies WHERE idMovie = ? ", [
-      idUrl,
-    ])
+    .query(
+      "SELECT idMovie, title, gender, image FROM movies WHERE idMovie = ? ",
+      [idUrl]
+    )
     .then(([results]) => {
       // results is an array of objects
       const foundMovies = results[0];
@@ -212,4 +213,4 @@ const staticServerPathImage = "./src/public-movies-images";
 server.use(express.static(staticServerPathImage));
 
 // 11. Static server for style for dynamic movie.ejs
-server.use(express.static("./public"));
+server.use(express.static("./src/public-movie-style"));
