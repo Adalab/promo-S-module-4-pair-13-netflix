@@ -194,8 +194,9 @@ server.post("/favorites-add", (req, res) => {
 });
 
 // 20. Endpoint to obtain favorite movies from MongoDB
-server.get("/favorites-list", (req, res) => {
-  Favorite.find()
+server.get("/favorites-list/:idUser", (req, res) => {
+  const idUser = req.params.idUser;
+  Favorite.find({ users: idUser })
     .populate({ path: "users movies", select: "name title" })
     .then((response) => res.json(response))
     .catch((error) => {
@@ -203,7 +204,27 @@ server.get("/favorites-list", (req, res) => {
     });
 });
 
-// 21.
+// 23. Register new users back. Remove not null except in email and password.
+server.post("/signup", (req, res) => {
+  const newEmail = req.body.email;
+  const newPassword = req.body.password;
+
+  connection
+    .query("INSERT INTO Users (email, password) VALUES (?, ?)", [
+      newEmail,
+      newPassword,
+    ])
+    .then(([results]) => {
+      console.log(results);
+      res.json({
+        success: true,
+        newUserId: "Welcome!",
+      });
+    })
+    .catch((err) => {
+      throw err;
+    });
+});
 
 // 7. Configure express static:
 const staticServerPath = "./src/public-react";

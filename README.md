@@ -79,7 +79,7 @@ Por favor marca a continuación los ejercicios que hayáis terminado:
 
 **Extras:**
 
-- [ ] 1. Registro de nuevas usuarias
+- [x] 1. Registro de nuevas usuarias
 - [ ] 2. Dos contraseñas en el registro
 - [ ] 3. Comprueba la fortaleza de la contraseña
 - [ ] 4. Comprueba que no haya una usuaria registrada con el mismo email

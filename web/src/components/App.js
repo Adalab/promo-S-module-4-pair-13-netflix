@@ -73,7 +73,7 @@ const App = () => {
     }
   }, [userId]);
 
-  /*
+  /* 21. Add localStorage to keep the user's login
   Event: enviar datos del login al API.
   Con este evento enviamos los datos del login al servidor cuando la usuaria lanza el evento.
   Como queremos que el back devuelva el id de la usuaria sendLoginToApi recibe el email y la contraseña que ella haya escrito.
@@ -150,7 +150,7 @@ const App = () => {
   const logout = () => {
     router.redirect("/");
     router.reload();
-    localStorage.clear();
+    localStorage.remove("idUser");
   };
 
   /*
