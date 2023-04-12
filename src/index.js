@@ -183,8 +183,8 @@ server.post("/favorites-add", (req, res) => {
   let idMovie = "642d36b21ec0a077732ae1f2";
   let idUser = "642d3d411ec0a077732ae1f6";
   const favorite = new Favorite({
-    idUser: idMovie,
-    idMovie: idUser,
+    movies: idMovie,
+    users: idUser,
     score: req.body.score,
   });
   favorite.save().then((err, doc) => {
@@ -195,7 +195,7 @@ server.post("/favorites-add", (req, res) => {
 // 20. Endpoint to obtain favorite movies from MongoDB
 server.get("/favorites-list", (req, res) => {
   Favorite.find()
-    .populate({ path: "users" })
+    .populate({ path: "users movies", select: "name title" })
     .then((response) => res.json(response))
     .catch((error) => {
       console.log(error);
