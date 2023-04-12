@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+web:
+  build:
+    context: .
+    dockerfile: Dockerfile
+  ports:
+    - '3500:3000'
+  environment:
+    PORT: 3000
+    MYSQL_HOST: db
+    MYSQL_PORT: 3306
+    MYSQL_DATABASE: docker-node-example
+    MYSQL_USER: docker-node-user
+    MYSQL_PASSWORD: docker-node-password
+  volumes:
+    - .:/home/node/app
+
+db:
+  image: mysql:latest
+  environment:
+    MYSQL_ROOT_PASSWORD: my-secret-pw
+    MYSQL_DATABASE: docker-node-example
+    MYSQL_USER: docker-node-user
+    MYSQL_PASSWORD: docker-node-password
+  volumes:
+    - mysqldata:/var/lib/mysql
+  ports:
+    - 3306:3306
+
+volumes:
+mysqldata: {}
