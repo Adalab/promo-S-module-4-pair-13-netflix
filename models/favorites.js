@@ -8,6 +8,11 @@ const favoriteSchema = new Schema(
     score: Number,
   },
   { collection: "favorite" }
+  // {
+  //   //documentation because of the error of path: "user" and populate
+  //   versionKey: false,
+  //   timestamps: true,
+  // }
 );
 const Favorite = mongoose.model("favorite", favoriteSchema);
-module.exports = Favorite; 
+module.exports = Favorite;

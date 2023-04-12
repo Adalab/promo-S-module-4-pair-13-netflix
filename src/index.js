@@ -121,7 +121,9 @@ server.get("/movie/:movieId", (req, res) => {
   console.log(req.params);
   const idUrl = req.params.movieId;
   connection
-    .query("SELECT idMovie, title, gender FROM movies WHERE idMovie = ? ", [idUrl])
+    .query("SELECT idMovie, title, gender FROM movies WHERE idMovie = ? ", [
+      idUrl,
+    ])
     .then(([results]) => {
       // results is an array of objects
       const foundMovies = results[0];
@@ -146,63 +148,61 @@ server.get("/movies_all_mongo", (req, res) => {
 
   if (genreFilterParam !== "") {
     const query = Movie.find({ genre: { $eq: genreFilterParam } })
-    .sort({ title: numberSort})
-    .then(
-      (docs) => {
+      .sort({ title: numberSort })
+      .then((docs) => {
         res.json({
           success: true,
           movies: docs,
         });
-      }
-    );
+      });
   } else {
     const query = Movie.find({})
-    .sort({ title: numberSort})
-    .then((docs) => {
-    res.json({
-      success: true,
-      movies: docs,
-    });
-  });
+      .sort({ title: numberSort })
+      .then((docs) => {
+        res.json({
+          success: true,
+          movies: docs,
+        });
+      });
   }
 });
 
 // 18. Endpoint to insert favorite movies to MongoDB
-server.post('/favorites-add', (req, res) => {
-  const query = Movie.find({ _id: "642d36b21ec0a077732ae1f2" })
-  .then((err, docs) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(docs);
-    }
-  });
-
-  let idMovie = "642d36b21ec0a077732ae1f2";
-  let idUser = "642d3d411ec0a077732ae1f6";
-  const favorite = new Favorite(
-    {
-    idUser: idMovie,
-    idMovie: idUser,
-    score: req.body.score
+server.post("/favorites-add", (req, res) => {
+  const query = Movie.find({ _id: "642d36b21ec0a077732ae1f2" }).then(
+    (err, docs) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(docs);
+      }
     }
   );
-  favorite.save()
-    .then((err, doc) => {
+
+  // 19. Endpoint to add/create/save favorite movies from MongoDB
+  let idMovie = "642d36b21ec0a077732ae1f2";
+  let idUser = "642d3d411ec0a077732ae1f6";
+  const favorite = new Favorite({
+    idUser: idMovie,
+    idMovie: idUser,
+    score: req.body.score,
+  });
+  favorite.save().then((err, doc) => {
     res.json(doc);
   });
 });
 
-// 19. Endpoint to obtain favorite movies from MongoDB
-server.get('/favorites-list', (req, res) => {
+// 20. Endpoint to obtain favorite movies from MongoDB
+server.get("/favorites-list", (req, res) => {
   Favorite.find()
-    .exec({path: "users", select: "name"})
+    .populate({ path: "users" })
     .then((response) => res.json(response))
     .catch((error) => {
-      console.log(error)
-    })
+      console.log(error);
+    });
 });
 
+// 21.
 
 // 7. Configure express static:
 const staticServerPath = "./src/public-react";
