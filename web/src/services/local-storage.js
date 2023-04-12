@@ -13,7 +13,7 @@ const set = (key, value) => {
 
 const objToExport = {
   get: get,
-  set: set
+  set: set,
 };
 
 export default objToExport;
