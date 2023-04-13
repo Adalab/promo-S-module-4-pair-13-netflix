@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 /* 1. Install mysql2 -> npm i mysql2 
-   2. Import mySql2 + connection (3)
+   2. Import mySql2 and connection (3)
 */
 const mysql = require("mysql2/promise");
 
