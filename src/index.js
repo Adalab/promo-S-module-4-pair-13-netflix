@@ -62,13 +62,13 @@ server.get("/movies", (req, res) => {
   const sortFilterParam = req.query.sort ? req.query.sort : "asc";
 
   connection
-    .query(
-      `SELECT * FROM movies WHERE gender LIKE ? ORDER BY title ${sortFilterParam}`,
-      [genreFilterParam]
-    )
+    .query("SELECT * FROM movies WHERE gender LIKE ? ORDER BY title ?", [
+      genreFilterParam,
+      sortFilterParam,
+    ])
     .then(([results, fields]) => {
       // results is the result of the query's list
-      console.log("Información recuperada:");
+      console.log("Información recuperada:", results);
       results.forEach((result) => {
         console.log(result);
       });
